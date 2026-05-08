@@ -7,14 +7,13 @@
         "ios": "2.2081"
     },
     "version": "1.0.0",
-    "id": "MalikHw.search-in-lists",
-    "name": "search-in-lists",
-    "developer": "MalikHw",
-    "description": "desc.",
-    "tags": ["yes", "yeah"],
+    "id": "MalikHw47.search-in-lists",
+    "name": "search in lists",
+    "developer": "MalikHw47",
+    "description": "Adds a search bar on level search UI's",
+    "tags": ["utility", "online"],
     "links": {
         "source": "https://github.com/MalikHw/search-in-lists",
         "community": "https://discord.gg/G9bZ92eg2n"
-    },
-    "settings": {}
+    }
 }
