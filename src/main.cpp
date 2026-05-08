@@ -3,6 +3,7 @@
 #include <Geode/binding/GJListLayer.hpp>
 #include <Geode/binding/GJSearchObject.hpp>
 #include <Geode/binding/GameLevelManager.hpp>
+#include <Geode/modify/LevelBrowserLayer.hpp>
 
 using namespace geode::prelude;
 
@@ -13,11 +14,10 @@ class $modify(MyLevelBrowserLayer, LevelBrowserLayer) {
         CCMenu* m_searchBarMenu = nullptr;
     };
     void onQuickSearch(CCObject*) {
-        auto& f = *m_fields;
-        if (!f.m_searchBar) return;
+        if (!m_fields->m_searchBar) return;
         // detach IME first
-        f.m_searchBar->getInputNode()->detachWithIME();
-        auto query = f.m_searchBar->getString();
+        m_fields->m_searchBar->getInputNode()->detachWithIME();
+        auto query = m_fields->m_searchBar->getString();
         if (query.empty()) return;
         // Build a search object with SearchType::0 (search by name)
         auto searchObj = GJSearchObject::create(SearchType::Search, query);
@@ -76,9 +76,8 @@ class $modify(MyLevelBrowserLayer, LevelBrowserLayer) {
     }
     void keyDown(enumKeyCodes key, double ts) {
         if (key == KEY_Enter) {
-            auto& f = *m_fields;
-            if (f.m_searchBar &&
-                f.m_searchBar->getInputNode()->getDelegate() != nullptr) {
+            if (m_fields->m_searchBar &&
+                m_fields->m_searchBar->getInputNode()->getDelegate() != nullptr) {
                 // the input is active, treat enter as "search"
                 onQuickSearch(nullptr);
                 return;
