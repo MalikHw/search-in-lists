@@ -19,31 +19,31 @@ class $modify(MyLevelBrowserLayer, LevelBrowserLayer) {
         m_fields->m_searchBar->getInputNode()->detachWithIME();
         auto query = m_fields->m_searchBar->getString();
         if (query.empty()) return;
-        // Build a search object with SearchType::0 (search by name)
-        auto searchObj = GJSearchObject::create(SearchType::Search, query);
-        auto newScene = LevelBrowserLayer::scene(searchObj);
-        CCDirector::get()->pushScene(CCTransitionFade::create(0.5f, newScene));
+        // Inherit the current search type (saved/local/online...) and only override the query
+        auto searchObj = GJSearchObject::create(m_searchObject->m_searchType, query);
+        // Reload in-place instead of pushing a new scene
+        this->loadPage(searchObj);
     }
     bool init(GJSearchObject* obj) {
         if (!LevelBrowserLayer::init(obj)) return false;
-        auto winSize = CCDirector::get()->getWinSize();
         auto list = m_list;
         if (!list) return true;
-        auto listPos = list->getPosition();
+        auto listPos = list->getPosition();    // center of GJListLayer
         auto listSize = list->getContentSize();
-        // make a small menu that sits just above list
+        // GJListLayer anchor is (0.5, 0) so top edge = listPos.y + listSize.height
+        float barHeight = 28.0f;
+        // make a small menu that sits just above the list
         auto menu = CCMenu::create();
-        menu->setContentSize({ listSize.width, 28.0f });
-        // position
+        menu->setContentSize({ listSize.width, barHeight });
         menu->setPosition(ccp(
-            listPos.x,
+            listPos.x - listSize.width / 2.0f,
             listPos.y + listSize.height + 2.0f
         ));
         menu->setAnchorPoint(ccp(0, 0));
         menu->setID("quicksearch-bar-menu");
         this->addChild(menu, 10);
         // bg bar
-        auto bg = CCLayerColor::create({ 0, 0, 0, 120 }, listSize.width, 28.0f);
+        auto bg = CCLayerColor::create({ 0, 0, 0, 120 }, listSize.width, barHeight);
         bg->setPosition(ccp(0, 0));
         bg->setID("quicksearch-bg");
         menu->addChild(bg);
@@ -54,14 +54,14 @@ class $modify(MyLevelBrowserLayer, LevelBrowserLayer) {
             searchSpr, this,
             menu_selector(MyLevelBrowserLayer::onQuickSearch)
         );
-        searchBtn->setPosition(ccp(listSize.width - 16.0f, 14.0f));
+        searchBtn->setPosition(ccp(listSize.width - 16.0f, barHeight / 2.0f));
         searchBtn->setID("quicksearch-button");
         menu->addChild(searchBtn);
         m_fields->m_searchBtn = searchBtn;
         // text input
         float inputWidth = listSize.width - 40.0f;
         auto input = TextInput::create(inputWidth, "Quick search levels...");
-        input->setPosition(ccp(inputWidth / 2.0f + 4.0f, 14.0f));
+        input->setPosition(ccp(inputWidth / 2.0f + 4.0f, barHeight / 2.0f));
         input->setTextAlign(TextInputAlign::Left);
         input->getInputNode()->setLabelPlaceholderScale(0.35f);
         input->getInputNode()->setMaxLabelScale(0.35f);
