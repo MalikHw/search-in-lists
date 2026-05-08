@@ -76,8 +76,7 @@ class $modify(MyLevelBrowserLayer, LevelBrowserLayer) {
     }
     void keyDown(enumKeyCodes key, double ts) {
         if (key == KEY_Enter) {
-            if (m_fields->m_searchBar &&
-                m_fields->m_searchBar->getInputNode()->getDelegate() != nullptr) {
+            if (m_fields->m_searchBar) {
                 // the input is active, treat enter as "search"
                 onQuickSearch(nullptr);
                 return;
